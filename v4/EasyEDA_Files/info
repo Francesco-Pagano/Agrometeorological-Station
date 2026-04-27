@@ -1,0 +1,278 @@
+{
+  "uuid": "7b0041c9fa41ce7c4ddf1b459230fa1d",
+  "path": "Offline/ESP8266_WS",
+  "name": "ESP8266_WS",
+  "content": "",
+  "created_at": "2026-02-01 20:50:15",
+  "updated_at": "2026-04-27 16:52:22",
+  "stick": "",
+  "documents": [
+    {
+      "uuid": "03868ea76c304fbe391f7a142b641ebf",
+      "title": "Sheet_1",
+      "description": "",
+      "docType": "1",
+      "master": "",
+      "thumb": "/images/thumb-default.png",
+      "components": {
+        "f1b7a3c214d748faa9d8bd41d136bc22": 2,
+        "0cb5b2f23f754c8bbd882904785c7341": 1,
+        "27e8fd0cd9744cda869d603d1d0d020f": 1,
+        "1f785ee0f729472eae11899cf0ae61b4": 4,
+        "5d56951fd43d4b5083b0f3cd9bfd5587": 3,
+        "588dac9f81df8f83843513972963b454": 1,
+        "56994305955647eda299fec7cb5fcf23": 2,
+        "62a5d91115c34b5b8d27e6b924c6c14e": 2,
+        "faa138f316544f5eb17b8279208eb33f": 1,
+        "2837936e1aec4c44ab1ca312d87b448c": 6
+      },
+      "BOM": [
+        [
+          "Value",
+          "Quantity",
+          "Package",
+          "Components",
+          "CustomPara"
+        ],
+        [
+          "3V3",
+          1,
+          "HEADER - HEADER-FEMALE-2.54_1X3",
+          "3V3",
+          {
+            "Manufacturer Part": "",
+            "Manufacturer": "",
+            "Supplier": "",
+            "Supplier Part": ""
+          }
+        ],
+        [
+          "AMS1117",
+          1,
+          "SOT-223-3_L6.5-W3.4-P2.30-LS7.0-BR",
+          "AMS1117",
+          {
+            "Manufacturer Part": "AMS1117-3.3",
+            "Manufacturer": "AMS",
+            "Supplier": "LCSC",
+            "Supplier Part": "C6186"
+          }
+        ],
+        [
+          "Battery",
+          1,
+          "BATTERY-SMD_18650-1S-L77.1-W20.7-1",
+          "BATTERY",
+          {
+            "Manufacturer Part": "BH-18650-B6AA002",
+            "Manufacturer": "MYOUNG(美阳)",
+            "Supplier": "LCSC",
+            "Supplier Part": "C7525438"
+          }
+        ],
+        [
+          "10uF",
+          2,
+          "CAP-D4.0×F1.5",
+          "C1,C2",
+          {
+            "Manufacturer Part": "",
+            "Manufacturer": "",
+            "Supplier": "",
+            "Supplier Part": ""
+          }
+        ],
+        [
+          "1N4148",
+          2,
+          "DO-35_BD2.0-L4.2-P8.20-D0.5-RD",
+          "D1,D2",
+          {
+            "Manufacturer Part": "1N4148",
+            "Manufacturer": "STMicroelectronics",
+            "Supplier": "LCSC",
+            "Supplier Part": "C13769"
+          }
+        ],
+        [
+          "ESP8266",
+          1,
+          "WIFIM-SMD_ESP-12F-ESP8266MOD",
+          "ESP8266",
+          {
+            "Manufacturer Part": "ESP8266",
+            "Manufacturer": "null",
+            "Supplier": "LCSC",
+            "Supplier Part": "C9900003049"
+          }
+        ],
+        [
+          "GND",
+          1,
+          "HEADER - HEADER-FEMALE-2.54_1X3",
+          "GND",
+          {
+            "Manufacturer Part": "",
+            "Manufacturer": "",
+            "Supplier": "",
+            "Supplier Part": ""
+          }
+        ],
+        [
+          "GPIO",
+          1,
+          "HEADER - HEADER-FEMALE-2.54_1X3",
+          "GPIO",
+          {
+            "Manufacturer Part": "",
+            "Manufacturer": "",
+            "Supplier": "",
+            "Supplier Part": ""
+          }
+        ],
+        [
+          "3.3v",
+          1,
+          "HDR-TH_2P-P2.54-V-M-1",
+          "J-3V3",
+          {
+            "Manufacturer Part": "NONE",
+            "Manufacturer": "NONE",
+            "Supplier": "",
+            "Supplier Part": "NONE"
+          }
+        ],
+        [
+          "5v",
+          1,
+          "HDR-TH_2P-P2.54-V-M-1",
+          "J-5V",
+          {
+            "Manufacturer Part": "NONE",
+            "Manufacturer": "NONE",
+            "Supplier": "",
+            "Supplier Part": "NONE"
+          }
+        ],
+        [
+          "OUT",
+          1,
+          "HEADER - HEADER-FEMALE-2.54_1X3",
+          "OUT",
+          {
+            "Manufacturer Part": "",
+            "Manufacturer": "",
+            "Supplier": "",
+            "Supplier Part": ""
+          }
+        ],
+        [
+          "Prog Mode",
+          1,
+          "HDR-TH_2P-P2.54-V-M-1",
+          "PROG-MODE",
+          {
+            "Manufacturer Part": "NONE",
+            "Manufacturer": "NONE",
+            "Supplier": "",
+            "Supplier Part": "NONE"
+          }
+        ],
+        [
+          "10k",
+          3,
+          "R_AXIAL-0.3",
+          "R1,R2,R3",
+          {
+            "Manufacturer Part": "",
+            "Manufacturer": "",
+            "Supplier": "",
+            "Supplier Part": ""
+          }
+        ],
+        [
+          "RAIN",
+          1,
+          "ARUN-RJ11-6P6C",
+          "RAIN",
+          {
+            "Manufacturer Part": "331-6421",
+            "Manufacturer": "RS PRO",
+            "Supplier": "RS-Online",
+            "Supplier Part": "331-6421"
+          }
+        ],
+        [
+          "SCL",
+          1,
+          "HEADER - HEADER-FEMALE-2.54_1X3",
+          "SCL",
+          {
+            "Manufacturer Part": "",
+            "Manufacturer": "",
+            "Supplier": "",
+            "Supplier Part": ""
+          }
+        ],
+        [
+          "SDA",
+          1,
+          "HEADER - HEADER-FEMALE-2.54_1X3",
+          "SDA",
+          {
+            "Manufacturer Part": "",
+            "Manufacturer": "",
+            "Supplier": "",
+            "Supplier Part": ""
+          }
+        ],
+        [
+          "SPEED+DIR",
+          1,
+          "ARUN-RJ11-6P6C",
+          "SPEED-DIRECTION",
+          {
+            "Manufacturer Part": "331-6421",
+            "Manufacturer": "RS PRO",
+            "Supplier": "RS-Online",
+            "Supplier Part": "331-6421"
+          }
+        ],
+        [
+          "Type C",
+          1,
+          "USB TYPE C 2 PIN",
+          "TYPEC",
+          {
+            "Manufacturer Part": "",
+            "Manufacturer": "",
+            "Supplier": "",
+            "Supplier Part": ""
+          }
+        ],
+        [
+          "UART",
+          1,
+          "HDR-TH_2P-P2.54-V-M-1",
+          "UART",
+          {
+            "Manufacturer Part": "NONE",
+            "Manufacturer": "NONE",
+            "Supplier": "",
+            "Supplier Part": "NONE"
+          }
+        ]
+      ],
+      "updateTime": 1777301542,
+      "createTime": 1749055291,
+      "histories": [],
+      "created_at": "2025-06-04 18:41:31",
+      "updated_at": "2026-04-27 16:52:22"
+    }
+  ],
+  "sort": [],
+  "title": "ESP8266_WS",
+  "foldername": "ESP8266_WS",
+  "schfilename": "ESP8266_WS.json",
+  "schfilemtime": 1777301542298
+}

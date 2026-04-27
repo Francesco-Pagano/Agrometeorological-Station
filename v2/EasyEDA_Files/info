@@ -1,0 +1,156 @@
+{
+  "uuid": "46d3f5ffb964da24b50224b701287519",
+  "path": "Offline/ShieldPi0_WS",
+  "name": "ShieldPi0_WS",
+  "content": "",
+  "created_at": "2024-06-14 19:41:55",
+  "updated_at": "2026-04-27 14:28:50",
+  "stick": "",
+  "documents": [
+    {
+      "uuid": "81310362211f4cb25f581981af5bd447",
+      "title": "Sheet_1",
+      "description": "",
+      "docType": "1",
+      "master": "",
+      "thumb": "/images/thumb-default.png",
+      "components": {
+        "8cb0931e7aee4571ab281a4f2e7b6e80": 3,
+        "5d56951fd43d4b5083b0f3cd9bfd5587": 1,
+        "63399b5d5cfe449495fd8b9cec0aff3d": 1,
+        "95965046a14a4a309b06be0458580155": 1,
+        "e3eab123787c441b897fcce25e4fe427": 1,
+        "233bdc317e274f24979617628e283aa0": 4,
+        "f1b7a3c214d748faa9d8bd41d136bc22": 2
+      },
+      "BOM": [
+        [
+          "Value",
+          "Quantity",
+          "Package",
+          "Components",
+          "CustomPara"
+        ],
+        [
+          "RASPBERRY PI ZERO",
+          1,
+          "RASPBERRY-PI-ZERO",
+          "CPU1",
+          {
+            "Manufacturer Part": "Pi Zero W",
+            "Manufacturer": "Raspberry Pi",
+            "Supplier": "Adafruit",
+            "Supplier Part": "3400"
+          }
+        ],
+        [
+          "Header2",
+          3,
+          "CONN-TH_2P-P5.00",
+          "P1,P2,P4",
+          {
+            "Manufacturer Part": "",
+            "Manufacturer": "",
+            "Supplier": "LCSC",
+            "Supplier Part": ""
+          }
+        ],
+        [
+          "OUT",
+          1,
+          "CONN-TH_3P-P5.00",
+          "P3",
+          {
+            "Manufacturer Part": "",
+            "Manufacturer": "",
+            "Supplier": "LCSC",
+            "Supplier Part": ""
+          }
+        ],
+        [
+          "4.7k",
+          1,
+          "R_AXIAL-0.3",
+          "R2",
+          {
+            "Manufacturer Part": "",
+            "Manufacturer": "",
+            "Supplier": "",
+            "Supplier Part": ""
+          }
+        ],
+        [
+          "ARUN--RJ11-6P6C",
+          2,
+          "ARUN-RJ11-6P6C",
+          "RJ1,RJ2",
+          {
+            "Manufacturer Part": "331-6421",
+            "Manufacturer": "RS PRO",
+            "Supplier": "RS-Online",
+            "Supplier Part": "331-6421"
+          }
+        ],
+        [
+          "5 Pin Pinheader",
+          4,
+          "5 PIN PINHEADER",
+          "U1,U12,U13,U15",
+          {
+            "Manufacturer Part": "",
+            "Manufacturer": "",
+            "Supplier": "",
+            "Supplier Part": ""
+          }
+        ],
+        [
+          "MCP3008",
+          1,
+          "PDIP-16_L19.3-W6.5-P2.54-LS7.6-BL",
+          "U2",
+          {
+            "Manufacturer Part": "MCP3008-I/P",
+            "Manufacturer": "MICROCHIP(美国微芯)",
+            "Supplier": "LCSC",
+            "Supplier Part": "C2890491"
+          }
+        ]
+      ],
+      "updateTime": 1777292930,
+      "createTime": 1668349768,
+      "histories": [],
+      "created_at": "2022-11-13 15:29:28",
+      "updated_at": "2026-04-27 14:28:50"
+    },
+    {
+      "uuid": "acb66f074392f3be46e7190b079805a2",
+      "puuid": "46d3f5ffb964da24b50224b701287519",
+      "title": "PCB_ShieldPi0_WS",
+      "filename": "PCB_ShieldPi0_WS.json",
+      "description": "",
+      "docType": "3",
+      "master": "",
+      "thumb": "/images/thumb-default.png",
+      "components": {
+        "3eb1249f3ebb4284ae221b0379016582": 1,
+        "a1dd762dd8f343edb86fec8cbd577f3c": 2,
+        "96eb73dd55234bb08343934df017fb41": 4,
+        "68a45e9484b94198825ecbde031e028e": 1
+      },
+      "BOM": [],
+      "updateTime": 1718395531,
+      "createTime": 1718389367,
+      "histories": [],
+      "created_at": "2024-06-14 20:22:47",
+      "updated_at": "2024-06-14 22:05:31"
+    }
+  ],
+  "sort": [
+    "10e864ace00022e81fc9dc58be2435f7",
+    "2338334e5cc0c25b2114df78daf41b6a"
+  ],
+  "title": "ShieldPi0_WS",
+  "foldername": "ShieldPi0_WS",
+  "schfilename": "ShieldPi0_WS.json",
+  "schfilemtime": 1777292930685
+}

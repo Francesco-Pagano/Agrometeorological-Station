@@ -1,14 +1,14 @@
 {
-  "uuid": "7b0041c9fa41ce7c4ddf1b459230fa1d",
+  "uuid": "8af0f09e33944763643ce4ab7e6ee31f",
   "path": "Offline/ESP8266_WS",
   "name": "ESP8266_WS",
   "content": "",
-  "created_at": "2026-02-01 20:50:15",
-  "updated_at": "2026-04-27 16:52:22",
+  "created_at": "2026-09-08 11:27:27",
+  "updated_at": "2026-09-08 17:32:31",
   "stick": "",
   "documents": [
     {
-      "uuid": "03868ea76c304fbe391f7a142b641ebf",
+      "uuid": "c1f1170a56df6de0af84086a031be3a0",
       "title": "Sheet_1",
       "description": "",
       "docType": "1",
@@ -19,12 +19,13 @@
         "0cb5b2f23f754c8bbd882904785c7341": 1,
         "27e8fd0cd9744cda869d603d1d0d020f": 1,
         "1f785ee0f729472eae11899cf0ae61b4": 4,
-        "5d56951fd43d4b5083b0f3cd9bfd5587": 3,
+        "5d56951fd43d4b5083b0f3cd9bfd5587": 4,
         "588dac9f81df8f83843513972963b454": 1,
         "56994305955647eda299fec7cb5fcf23": 2,
         "62a5d91115c34b5b8d27e6b924c6c14e": 2,
         "faa138f316544f5eb17b8279208eb33f": 1,
-        "2837936e1aec4c44ab1ca312d87b448c": 6
+        "2837936e1aec4c44ab1ca312d87b448c": 5,
+        "060abe03641543a2ad3e28a90beee62b": 1
       },
       "BOM": [
         [
@@ -107,6 +108,18 @@
           }
         ],
         [
+          "HEADER - HEADER-FEMALE-2.54_1X4 COPY",
+          1,
+          "HEADER - HEADER-FEMALE-2.54_1X4",
+          "EXTRA_GPIO",
+          {
+            "Manufacturer Part": "",
+            "Manufacturer": "",
+            "Supplier": "Sparkfun",
+            "Supplier Part": ""
+          }
+        ],
+        [
           "GND",
           1,
           "HEADER - HEADER-FEMALE-2.54_1X3",
@@ -119,19 +132,7 @@
           }
         ],
         [
-          "GPIO",
-          1,
-          "HEADER - HEADER-FEMALE-2.54_1X3",
-          "GPIO",
-          {
-            "Manufacturer Part": "",
-            "Manufacturer": "",
-            "Supplier": "",
-            "Supplier Part": ""
-          }
-        ],
-        [
-          "3.3v",
+          "+3.3V",
           1,
           "HDR-TH_2P-P2.54-V-M-1",
           "J-3V3",
@@ -143,7 +144,7 @@
           }
         ],
         [
-          "5v",
+          "+5V",
           1,
           "HDR-TH_2P-P2.54-V-M-1",
           "J-5V",
@@ -152,18 +153,6 @@
             "Manufacturer": "NONE",
             "Supplier": "",
             "Supplier Part": "NONE"
-          }
-        ],
-        [
-          "OUT",
-          1,
-          "HEADER - HEADER-FEMALE-2.54_1X3",
-          "OUT",
-          {
-            "Manufacturer Part": "",
-            "Manufacturer": "",
-            "Supplier": "",
-            "Supplier Part": ""
           }
         ],
         [
@@ -183,6 +172,18 @@
           3,
           "R_AXIAL-0.3",
           "R1,R2,R3",
+          {
+            "Manufacturer Part": "",
+            "Manufacturer": "",
+            "Supplier": "",
+            "Supplier Part": ""
+          }
+        ],
+        [
+          "22k",
+          1,
+          "R_AXIAL-0.3",
+          "R4",
           {
             "Manufacturer Part": "",
             "Manufacturer": "",
@@ -261,18 +262,30 @@
             "Supplier": "",
             "Supplier Part": "NONE"
           }
+        ],
+        [
+          "OUT",
+          1,
+          "HEADER - HEADER-FEMALE-2.54_1X3",
+          "WS_PIN",
+          {
+            "Manufacturer Part": "",
+            "Manufacturer": "",
+            "Supplier": "",
+            "Supplier Part": ""
+          }
         ]
       ],
-      "updateTime": 1777301542,
+      "updateTime": 1788881551,
       "createTime": 1749055291,
       "histories": [],
       "created_at": "2025-06-04 18:41:31",
-      "updated_at": "2026-04-27 16:52:22"
+      "updated_at": "2026-09-08 17:32:31"
     }
   ],
   "sort": [],
   "title": "ESP8266_WS",
   "foldername": "ESP8266_WS",
   "schfilename": "ESP8266_WS.json",
-  "schfilemtime": 1777301542298
+  "schfilemtime": 1788881551982
 }

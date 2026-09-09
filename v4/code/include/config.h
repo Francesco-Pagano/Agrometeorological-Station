@@ -42,3 +42,4 @@ extern const char* OTA_PASSWORD;
 extern const char* mqtt_server;
 extern const int mqtt_port;
 extern const char* mqtt_topic;
+extern const char* mqtt_clientName;

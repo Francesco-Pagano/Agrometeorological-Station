@@ -20,7 +20,7 @@ static void connectMQTT() {
   if (now - lastMqttAttempt < MQTT_RECONNECT_INTERVAL) return;
 
   lastMqttAttempt = now;
-  if (mqttClient.connect("StazioneMeteoESP8266")) {
+  if (mqttClient.connect(mqtt_clientName)) {
     logMsg("[MQTT] Connessione OK");
   } else {
     logMsg("[MQTT] Connessione FALLITA, rc=" + String(mqttClient.state()));

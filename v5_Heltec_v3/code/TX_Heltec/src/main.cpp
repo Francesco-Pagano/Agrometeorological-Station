@@ -178,8 +178,8 @@ void decodeFineOffset(uint8_t* b) {
   float current_wind = (b[7] | (b[4] & 0x10) << 4) * 0.125f * 0.51f;
   float current_gust = b[8] * 0.51f;
 
-  int uv_raw = b[10] << 8 | b[11];
-  int light_raw = b[12] << 16 | b[13] << 8 | b[14];
+  int uv_raw = b[11] << 8 | b[12];
+  int light_raw = b[13] << 16 | b[14] << 8 | b[15];
   float current_lux = light_raw * 0.1f;
 
   int uvi_upper[] = { 432, 851, 1210, 1570, 2017, 2450, 2761, 3100, 3512, 3918, 4277, 4650, 5029 };
@@ -344,7 +344,7 @@ static bool appendBacklog(const char* path, const void* rec, size_t recSize, siz
 }
 
 static bool initRadio() {
-  if (radio.begin(868.5, 125.0, 9, 7, 0x12, 14) != RADIOLIB_ERR_NONE) return false;
+  if (radio.begin(868.5, 125.0, 10, 8, 0x12, 22) != RADIOLIB_ERR_NONE) return false;
   radio.setPacketReceivedAction(setFlag);
   return true;
 }
@@ -357,7 +357,7 @@ bool sendAndWaitAck(LoRaPacket& pkt) {
     loraInterrupt = false;
     radio.startReceive();
     unsigned long waitStart = millis();
-    while ((int32_t)(millis() - waitStart) < 2500) {
+    while ((int32_t)(millis() - waitStart) < 5000) {
       if (loraInterrupt) {
         loraInterrupt = false;
         AckPacket ack;
@@ -404,6 +404,7 @@ enum WsState : uint8_t { WS_OFF, WS_CONNECTING, WS_UP };
 WsState wsState = WS_OFF;
 unsigned long wsMillis = 0;
 bool otaStarted = false;
+bool otaUpdating = false;
 
 static void wifiGoOff(unsigned long now) {
   if (otaStarted) { ArduinoOTA.end(); otaStarted = false; }
@@ -493,8 +494,9 @@ void setup() {
 
   ArduinoOTA.setHostname(OTA_HOSTNAME);
   ArduinoOTA.setPassword(OTA_PASSWORD);
-  ArduinoOTA.onStart([]() { esp_task_wdt_delete(NULL); });
-  ArduinoOTA.onError([](ota_error_t error) { esp_task_wdt_add(NULL); });
+  ArduinoOTA.onStart([]() { esp_task_wdt_delete(NULL); otaUpdating = true; });
+  ArduinoOTA.onEnd([]() { otaUpdating = false; });
+  ArduinoOTA.onError([](ota_error_t error) { esp_task_wdt_add(NULL); otaUpdating = false; });
 
   wsState = WS_OFF;
   wsMillis = millis() - WIFI_OFF_TIME_MS;
@@ -535,7 +537,14 @@ static void handleCC1101(unsigned long now) {
   } else if ((rxb & 0x7F) >= 27) {
     uint8_t buf[27];
     ELECHOUSE_cc1101.SpiReadBurstReg(CC1101_RXFIFO, buf, 27);
-    if (buf[0] == 0xD4 || buf[0] == 0x24) decodeFineOffset(buf);
+    if (buf[0] == 0xD4) {
+      decodeFineOffset(buf);
+    } else if (buf[0] == 0x24) {
+      uint8_t shiftedBuf[28];
+      shiftedBuf[0] = 0x00;
+      memcpy(&shiftedBuf[1], buf, 27);
+      decodeFineOffset(shiftedBuf);
+    }
     ELECHOUSE_cc1101.SpiStrobe(CC1101_SIDLE);
     ELECHOUSE_cc1101.SpiStrobe(CC1101_SFRX);
     ELECHOUSE_cc1101.SetRx();
@@ -652,6 +661,12 @@ void loop() {
   unsigned long now = millis();
 
   manageWifi(now);
+
+  if (otaUpdating) {
+    delay(1);
+    return;
+  }
+
   handleCC1101(now);
   handleLeaf(now);
   handleLoraLive(now);

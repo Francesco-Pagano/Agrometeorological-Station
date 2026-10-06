@@ -326,7 +326,7 @@ void checkOTAUpdate() {
 }
 
 static bool initRadio() {
-  if (radio.begin(868.5, 125.0, 9, 7, 0x12, 14) != RADIOLIB_ERR_NONE) return false;
+  if (radio.begin(868.5, 125.0, 10, 8, 0x12, 22) != RADIOLIB_ERR_NONE) return false;
   radio.setPacketReceivedAction(setFlag);
   return radio.startReceive() == RADIOLIB_ERR_NONE;
 }
@@ -566,11 +566,28 @@ static void handleFlush(unsigned long now) {
   rxIsFlushing = false;
 }
 
+static void handleHeartbeat(unsigned long now) {
+  static unsigned long lastHeartbeat = 0;
+  static bool firstSent = false;
+
+  if (!client.connected()) return;
+
+  if (!firstSent || (int32_t)(now - lastHeartbeat) >= 10800000) {
+    lastHeartbeat = now;
+    firstSent = true;
+    
+    char hbPayload[128];
+    snprintf(hbPayload, sizeof(hbPayload), "{\"version\":\"%s\",\"uptime\":%lu}", CURRENT_VERSION.c_str(), (unsigned long)(now / 1000));
+    client.publish(mqtt_topic_status, hbPayload);
+  }
+}
+
 void loop() {
   esp_task_wdt_reset();
   unsigned long now = millis();
 
   handleNetwork(now);
+  handleHeartbeat(now);
 
   if ((int32_t)(now - previousMillisOTA) >= intervalOTA) {
     previousMillisOTA = now;

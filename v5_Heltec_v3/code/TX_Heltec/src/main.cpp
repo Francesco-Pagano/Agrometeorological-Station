@@ -83,6 +83,7 @@ uint16_t last_rain_raw = 0;
 bool first_rain_reading = true;
 
 float accTemp = 0, accHum = 0, accWind = 0, accSin = 0, accCos = 0, accGust = 0, accRain = 0;
+float accLux = 0, accUv = 0;
 uint16_t accN = 0;
 int lastLowBat = -1;
 float accLeafT = 0, accLeafW = 0;
@@ -177,6 +178,14 @@ void decodeFineOffset(uint8_t* b) {
   float current_wind = (b[7] | (b[4] & 0x10) << 4) * 0.125f * 0.51f;
   float current_gust = b[8] * 0.51f;
 
+  int uv_raw = b[10] << 8 | b[11];
+  int light_raw = b[12] << 16 | b[13] << 8 | b[14];
+  float current_lux = light_raw * 0.1f;
+
+  int uvi_upper[] = { 432, 851, 1210, 1570, 2017, 2450, 2761, 3100, 3512, 3918, 4277, 4650, 5029 };
+  int current_uv_index = 0;
+  while (current_uv_index < 13 && uvi_upper[current_uv_index] < uv_raw) ++current_uv_index;
+
   accTemp += current_temp;
   accHum += current_hum;
   accWind += current_wind;
@@ -186,6 +195,8 @@ void decodeFineOffset(uint8_t* b) {
     accCos += cosf(rad);
   }
   if (current_gust > accGust) accGust = current_gust;
+  accLux += current_lux;
+  accUv += current_uv_index;
   lastLowBat = (b[4] & 0x08) >> 3;
   accN++;
 
@@ -215,6 +226,8 @@ bool fillPacketFromAccumulators() {
     if (dir < 0) dir += 360.0f;
     d.wind_dir = ((int)lroundf(dir)) % 360;
     d.rain_mm = accRain;
+    d.lux = accLux / accN;
+    d.uv_index = (int)lroundf(accUv / accN);
     d.low_battery = lastLowBat;
   }
   if (accLeafN > 0) {
@@ -224,7 +237,7 @@ bool fillPacketFromAccumulators() {
 
   bool hasData = (accN > 0) || (accLeafN > 0);
 
-  accTemp = accHum = accWind = accSin = accCos = accGust = accRain = 0;
+  accTemp = accHum = accWind = accSin = accCos = accGust = accRain = accLux = accUv = 0;
   accN = 0;
   accLeafT = accLeafW = 0;
   accLeafN = 0;
@@ -500,7 +513,6 @@ void setup() {
 
   previousMillisLoRa = now - intervalLoRa + 75000;
 }
-
 
 static void handleCC1101(unsigned long now) {
   if ((int32_t)(now - lastCcResetMillis) > 300000) {

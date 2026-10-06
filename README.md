@@ -32,9 +32,9 @@ The initial goal was to build a first, fully functional working prototype of a W
 * **Hardware Design:** [EasyEDA/Gerber Files](v1/EasyEDA_Files/) and [PDF Schematic](v1/Schematic_ShieldPi4_WS.pdf)
 
 <p align="center">
-  <img src="v1/img/Schematic_ShieldPi4_WS.png" height="220" alt="V1 Schematic">
-  <img src="v1/img/3D_ShieldPi4_WS.png" height="220" alt="V1 3D Render">
-  <img src="v1/img/PCB.png" height="220" alt="V1 Assembled PCB">
+  <img src="v1_Pi4/img/Schematic_ShieldPi4_WS.png" height="220" alt="V1 Schematic">
+  <img src="v1_Pi4/img/3D_ShieldPi4_WS.png" height="220" alt="V1 3D Render">
+  <img src="v1_Pi4/img/PCB.png" height="220" alt="V1 Assembled PCB">
   <br><i>From left: Schematic, 3D Render, and assembled PCB on RPi4.</i>
 </p>
 
@@ -48,9 +48,9 @@ I switched to the **Raspberry Pi Zero W** and introduced standard **RJ11** conne
 * **Hardware Design:** [EasyEDA/Gerber Files](v2/EasyEDA_Files/) and [PDF Schematic](v2/Schematic_ShieldPi0_WS.pdf)
 
 <p align="center">
-  <img src="v2/img/Schematic_ShieldPi0_WS.png" height="220" alt="V2 Schematic">
-  <img src="v2/img/3D_ShieldPi0_WS.png" height="220" alt="V2 3D Render">
-  <img src="v2/img/PCB.jpg" height="220" alt="V2 Deployed">
+  <img src="v2_Pi0/img/Schematic_ShieldPi0_WS.png" height="220" alt="V2 Schematic">
+  <img src="v2_Pi0/img/3D_ShieldPi0_WS.png" height="220" alt="V2 3D Render">
+  <img src="v2_Pi0/img/PCB.jpg" height="220" alt="V2 Deployed">
   <br><i>From left: Schematic, 3D Render, and assembled PCB.</i>
 </p>
 
@@ -64,9 +64,9 @@ The system is powered by a solar panel with an **MPPT** charge controller. I use
 * **Hardware Design:** [EasyEDA/Gerber Files](v3/EasyEDA_Files/) and [PDF Schematic](v3/Schematic_ShieldHeltec_WS.pdf)
 
 <p align="center">
-  <img src="v3/img/Schematic_ShieldHeltec_WS.png" height="220" alt="V3 Schematic">
-  <img src="v3/img/3D_ShieldHeltec_WS.png" height="220" alt="V3 3D Render">
-  <img src="v3/img/PCB.png" height="220" alt="V3 Final Assembly">
+  <img src="v3_Heltec_v2/img/Schematic_ShieldHeltec_WS.png" height="220" alt="V3 Schematic">
+  <img src="v3_Heltec_v2/img/3D_ShieldHeltec_WS.png" height="220" alt="V3 3D Render">
+  <img src="v3_Heltec_v2/img/PCB.png" height="220" alt="V3 Final Assembly">
   <br><i>From left: Schematic, 3D Render, and final Enclosure.</i>
 </p>
 
@@ -82,9 +82,9 @@ This "all-in-one" approach drastically reduces production costs, power consumpti
 * **Schematics:** [PDF of the WIP schematic](v4/Schematic_ESP8266_WS.pdf)
 
 <p align="center">
-  <img src="v4/img/Schematic_ESP8266_WS.png" height="400" alt="V4 Schematic">
+  <img src="v4_ESP8266/img/Schematic_ESP8266_WS.png" height="400" alt="V4 Schematic">
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="v4/img/3D_ESP8266_WS.png" height="400" alt="V4 ESP8266 Standalone PCB">
+  <img src="v4_ESP8266/img/3D_ESP8266_WS.png" height="400" alt="V4 ESP8266 Standalone PCB">
   <br><i>Left: Schematic. Right: 3D Render of the PCB.</i>
 </p>
 

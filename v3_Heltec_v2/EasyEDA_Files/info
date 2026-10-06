@@ -1,0 +1,149 @@
+{
+  "uuid": "c953b9226643125cf5e16b76efb1faf0",
+  "path": "Offline/ShieldHeltec_WS",
+  "name": "ShieldHeltec_WS",
+  "content": "",
+  "created_at": "2026-04-27 14:32:15",
+  "updated_at": "2026-04-27 14:36:46",
+  "stick": "",
+  "documents": [
+    {
+      "uuid": "c0f0702f8ba7abfa7f3964a33ae7c747",
+      "title": "Sheet_1",
+      "description": "",
+      "docType": "1",
+      "master": "",
+      "thumb": "/images/thumb-default.png",
+      "components": {
+        "581b5234d19e439b938ffd765b08031e": 1,
+        "53030fa887ed48d186567bb8b5e28b25": 1,
+        "eacafdbbea8a4eeea221348f1c69a324": 5,
+        "8cb0931e7aee4571ab281a4f2e7b6e80": 2,
+        "486123a4bb814705bb1a3164561bb535": 2,
+        "3e1861561a6b48c39b2fa7dfa4980f6d": 1
+      },
+      "BOM": [
+        [
+          "Value",
+          "Quantity",
+          "Package",
+          "Components",
+          "CustomPara"
+        ],
+        [
+          "CC1101 Module",
+          1,
+          "CC1101-BOARS",
+          "CC1_",
+          {
+            "Manufacturer Part": "",
+            "Manufacturer": "",
+            "Supplier": "",
+            "Supplier Part": ""
+          }
+        ],
+        [
+          "Foglia",
+          2,
+          "CONN-TH_2P-P5.00",
+          "LEAF,VOLTAGE",
+          {
+            "Manufacturer Part": "",
+            "Manufacturer": "",
+            "Supplier": "LCSC",
+            "Supplier Part": ""
+          }
+        ],
+        [
+          "Header 4 Pin 2.54mm",
+          5,
+          "PIN_HEADER_FEMALE_4PIN",
+          "P1,P2,P3,P4,P5",
+          {
+            "Manufacturer Part": "",
+            "Manufacturer": "",
+            "Supplier": "",
+            "Supplier Part": ""
+          }
+        ],
+        [
+          "R1",
+          1,
+          "R_AXIAL-0.5",
+          "R1",
+          {
+            "Manufacturer Part": "",
+            "Manufacturer": "",
+            "Supplier": "",
+            "Supplier Part": ""
+          }
+        ],
+        [
+          "R2",
+          1,
+          "R_AXIAL-0.5",
+          "R2",
+          {
+            "Manufacturer Part": "",
+            "Manufacturer": "",
+            "Supplier": "",
+            "Supplier Part": ""
+          }
+        ],
+        [
+          "HELTEC_LORA_ESP32_V2",
+          1,
+          "HELTEC_LORA_32_FF",
+          "U2",
+          {
+            "Manufacturer Part": "WIFI LoRa 32",
+            "Manufacturer": "",
+            "Supplier": "HELTEC",
+            "Supplier Part": "WIFI LoRa 32"
+          }
+        ],
+        [
+          "RS485",
+          1,
+          "RS485 TO TTL 5V 3.3V",
+          "U4",
+          {
+            "Manufacturer Part": "",
+            "Manufacturer": "",
+            "Supplier": "",
+            "Supplier Part": ""
+          }
+        ]
+      ],
+      "updateTime": 1777293406,
+      "createTime": 1688283531,
+      "histories": [],
+      "created_at": "2023-07-02 09:38:51",
+      "updated_at": "2026-04-27 14:36:46"
+    },
+    {
+      "uuid": "d6720a848fdc334ddf4a6aa7adb5b7bc",
+      "title": "PCB_ShieldHeltec_WS",
+      "filename": "PCB_ShieldHeltec_WS.json",
+      "description": "",
+      "docType": "3",
+      "master": "",
+      "thumb": "/images/thumb-default.png",
+      "components": {
+        "e46b9352a8354a20870bdcdcb288663a": 2,
+        "8c72492dae714b64a31ee36ec56292b8": 1
+      },
+      "BOM": [],
+      "updateTime": 1693321087,
+      "createTime": 1688809326,
+      "histories": [],
+      "created_at": "2023-07-08 11:42:06",
+      "updated_at": "2023-08-29 16:58:07"
+    }
+  ],
+  "sort": [],
+  "title": "ShieldHeltec_WS",
+  "foldername": "ShieldHeltec_WS",
+  "schfilename": "ShieldHeltec_WS.json",
+  "schfilemtime": 1777293406582
+}

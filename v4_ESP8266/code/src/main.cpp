@@ -46,6 +46,8 @@ bool wasMqttConnected = false;
 float maxGustKmh = 0.0;
 int lastValidWindDir = 0;
 
+unsigned long offlineLineCount = 0;
+
 void ICACHE_RAM_ATTR handleRainInterrupt() {
   unsigned long currentTime = millis();
   if (currentTime - lastRainTime > RAIN_DEBOUNCE) {
@@ -122,7 +124,7 @@ void saveOfflineData(const String &payload) {
     return;
   }
 
-  if (countOfflineLines() >= OFFLINE_MAX_LINES) {
+  if (offlineLineCount >= OFFLINE_MAX_LINES) {
     logMsg("[FS] Limite righe offline raggiunto, dato scartato.");
     return;
   }
@@ -131,6 +133,7 @@ void saveOfflineData(const String &payload) {
   if (f) {
     f.println(payload);
     f.close();
+    offlineLineCount++;
     logMsg("[FS] Dato salvato offline.");
   } else {
     logMsg("[FS] ERRORE apertura file in append!");
@@ -146,6 +149,13 @@ void sendOfflineData() {
   if (f.size() == 0) {
     f.close();
     LittleFS.remove(offlineDataFile);
+    offlineLineCount = 0;
+    return;
+  }
+
+  File tempF = LittleFS.open(offlineTempFile, "w");
+  if (!tempF) {
+    f.close();
     return;
   }
 
@@ -153,7 +163,6 @@ void sendOfflineData() {
   unsigned long sentCount = 0;
   unsigned long failCount = 0;
   bool stopSending = false;
-  File tempF;
 
   while (f.available()) {
     String payload = f.readStringUntil('\n');
@@ -163,6 +172,7 @@ void sendOfflineData() {
     if (!stopSending && sentCount < MAX_BATCH && mqttClient.connected()) {
       if (mqttClient.publish(mqtt_topic, payload.c_str())) {
         sentCount++;
+        if (offlineLineCount > 0) offlineLineCount--;
         delay(250); 
         yield(); 
         continue;
@@ -174,24 +184,15 @@ void sendOfflineData() {
       stopSending = true; 
     }
 
-    if (!tempF) {
-      tempF = LittleFS.open(offlineTempFile, "w");
-    }
-    if (tempF) {
-      tempF.println(payload);
-    }
+    tempF.println(payload);
     yield(); 
   }
   
   f.close();
+  tempF.close();
 
-  if (tempF) {
-    tempF.close();
-    LittleFS.remove(offlineDataFile);
-    LittleFS.rename(offlineTempFile, offlineDataFile);
-  } else if (!stopSending) {
-    LittleFS.remove(offlineDataFile);
-  }
+  LittleFS.remove(offlineDataFile);
+  LittleFS.rename(offlineTempFile, offlineDataFile);
 
   if (sentCount > 0 || failCount > 0) {
     logMsg("[FS] Offline: " + String(sentCount) + " inviati, " + String(failCount) + " falliti");
@@ -213,7 +214,7 @@ void handleRoot() {
   html += "<b>MQTT:</b> " + String(mqttClient.connected() ? "connesso" : "DISCONNESSO") + "<br>";
   html += "<b>LittleFS:</b> " + String(fsMounted ? "montato" : "NON montato") + "<br>";
   html += "<b>BME680:</b> " + String(bmeFound ? "trovato" : "non trovato") + "<br>";
-  html += "<b>Righe offline:</b> " + String(countOfflineLines()) + "<br>";
+  html += "<b>Righe offline:</b> " + String(offlineLineCount) + "<br>";
   html += "<hr><h2>Timestamp</h2>";
   html += "<b>Epoch:</b> " + String(epoch) + "<br>";
   html += "<b>Date:</b> " + epochToUtcString(epoch) + "<br>";
@@ -290,7 +291,6 @@ void setup() {
   ArduinoOTA.begin();
 
   mqttClient.setServer(mqtt_server, mqtt_port);
-  
   mqttClient.setBufferSize(512);
 
   debugServer.on("/", handleRoot);
@@ -300,13 +300,19 @@ void setup() {
   
   randomSeed(micros());
 
+  offlineLineCount = countOfflineLines();
+  if (offlineLineCount > 0) {
+    logMsg("[FS] " + String(offlineLineCount) + " righe in coda dal riavvio precedente.");
+  }
+
+  noInterrupts();
+  windClicks = 0;
+  gustClicks = 0;
+  rainClicks = 0;
+  interrupts();
+  
   lastSendTime = millis();
   lastGustCalcTime = millis();
-
-  unsigned long pending = countOfflineLines();
-  if (pending > 0) {
-    logMsg("[FS] " + String(pending) + " righe in coda dal riavvio precedente.");
-  }
 }
 
 void loop() {

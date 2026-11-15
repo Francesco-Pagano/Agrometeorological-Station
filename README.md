@@ -25,11 +25,11 @@ I developed an interactive dashboard on **ThingsBoard** for real-time monitoring
 
 The project is structured into three iterations, each focused on a specific improvement: computing power, off-grid autonomy, and total hardware integration.
 
-### [Version 1: The Foundations (Raspberry Pi 4)](v1/)
+### [Version 1: The Foundations (Raspberry Pi 4)](v1_Pi4/)
 The initial goal was to build a first, fully functional working prototype of a Weather Station using the Raspberry Pi 4 as the core platform.
 
-* **Source Code:** [Python scripts](v1/code/)
-* **Hardware Design:** [EasyEDA/Gerber Files](v1/EasyEDA_Files/) and [PDF Schematic](v1/Schematic_ShieldPi4_WS.pdf)
+* **Source Code:** [Python scripts](v1_Pi4/code/)
+* **Hardware Design:** [EasyEDA/Gerber Files](v1_Pi4/EasyEDA_Files/) and [PDF Schematic](v1_Pi4/Schematic_ShieldPi4_WS.pdf)
 
 <p align="center">
   <img src="v1_Pi4/img/Schematic_ShieldPi4_WS.png" height="220" alt="V1 Schematic">
@@ -40,12 +40,12 @@ The initial goal was to build a first, fully functional working prototype of a W
 
 ---
 
-### [Version 2: Miniaturization & Field Deployment (RPi Zero)](v2/)
+### [Version 2: Miniaturization & Field Deployment (RPi Zero)](v2_Pi0/)
 In the second version, I focused on energy optimization and physical robustness for field deployment.<br>
 I switched to the **Raspberry Pi Zero W** and introduced standard **RJ11** connectors for commercial weather sensors (plug-and-play).
 
-* **Source Code:** [Python scripts](v2/code/)
-* **Hardware Design:** [EasyEDA/Gerber Files](v2/EasyEDA_Files/) and [PDF Schematic](v2/Schematic_ShieldPi0_WS.pdf)
+* **Source Code:** [Python scripts](v2_Pi0/code/)
+* **Hardware Design:** [EasyEDA/Gerber Files](v2_Pi0/EasyEDA_Files/) and [PDF Schematic](v2_Pi0/Schematic_ShieldPi0_WS.pdf)
 
 <p align="center">
   <img src="v2_Pi0/img/Schematic_ShieldPi0_WS.png" height="220" alt="V2 Schematic">
@@ -56,12 +56,12 @@ I switched to the **Raspberry Pi Zero W** and introduced standard **RJ11** conne
 
 ---
 
-### [Version 3: Industrial IoT, LoRa & Solar Autonomy](v3/)
+### [Version 3: Industrial IoT, LoRa & Solar Autonomy](v3_Heltec_v2/)
 The third iteration introduces long-range communication and off-grid energy independence.<br>
 The system is powered by a solar panel with an **MPPT** charge controller. I used two **Heltec LoRa 32 v2** (ESP32) modules for radio transmission and integrated a leaf wetness sensor via **RS485**.
 
-* **Firmware Code:** [C++ sketches](v3/code/)
-* **Hardware Design:** [EasyEDA/Gerber Files](v3/EasyEDA_Files/) and [PDF Schematic](v3/Schematic_ShieldHeltec_WS.pdf)
+* **Firmware Code:** [C++ sketches](v3_Heltec_v2/code/)
+* **Hardware Design:** [EasyEDA/Gerber Files](v3_Heltec_v2/EasyEDA_Files/) and [PDF Schematic](v3_Heltec_v2/Schematic_ShieldHeltec_WS.pdf)
 
 <p align="center">
   <img src="v3_Heltec_v2/img/Schematic_ShieldHeltec_WS.png" height="220" alt="V3 Schematic">
@@ -72,14 +72,14 @@ The system is powered by a solar panel with an **MPPT** charge controller. I use
 
 ---
 
-### [Version 4: The Stand-Alone Custom PCB (WIP)](v4/)
+### [Version 4: The Stand-Alone Custom PCB (WIP)](v4_ESP8266/)
 The state of the art and the natural evolution of the project.<br>
 In this version, currently under development, I am abandoning the concept of a "Shield" connected to a third-party dev-board. <br>
 I designed a single printed circuit board that directly integrates the **ESP8266** SoC (ESP-12F module).<br>
 This "all-in-one" approach drastically reduces production costs, power consumption, and physical footprint, representing a true hardware product ready for industrialization.
 
-* **Hardware Design:** [Work In Progress - EasyEDA Files](v4/EasyEDA_Files/)
-* **Schematics:** [PDF of the WIP schematic](v4/Schematic_ESP8266_WS.pdf)
+* **Hardware Design:** [Work In Progress - EasyEDA Files](v4_ESP8266/EasyEDA_Files/)
+* **Schematics:** [PDF of the WIP schematic](v4_ESP8266/Schematic_ESP8266_WS.pdf)
 
 <p align="center">
   <img src="v4_ESP8266/img/Schematic_ESP8266_WS.png" height="400" alt="V4 Schematic">

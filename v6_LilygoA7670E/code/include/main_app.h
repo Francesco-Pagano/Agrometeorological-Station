@@ -15,6 +15,7 @@
 #include "secrets.h"
 #include "storage_sd.h"
 #include "modem_4g.h"
+#include <esp_idf_version.h>
 
 #define RTC_STATE_MAGIC 0xA7670E03UL
 RTC_NOINIT_ATTR uint32_t rtcStateMagic;
@@ -204,7 +205,7 @@ bool mqttOpenSession(Client& netClient) {
     esp_task_wdt_reset();
     if (!netClient.connected() && netClient.available() < 4) return false;
     if (millis() - t0 > 10000UL) return false;
-    delay(5);
+    delay(25);
   }
   uint8_t connAck[4];
   if (netClient.read(connAck, 4) != 4) return false;
@@ -244,7 +245,7 @@ bool mqttPublishPacketQoS1(Client& netClient, const char* topic, const char* pay
     esp_task_wdt_reset();
     if (!netClient.connected() && netClient.available() < 4) return false;
     if (millis() - t0 > 15000UL) return false;
-    delay(5);
+    delay(25);
   }
   uint8_t pubAck[4];
   if (netClient.read(pubAck, 4) != 4) return false;
@@ -874,6 +875,8 @@ void handleSaveAndFlush(unsigned long now) {
         float dir      = atan2f(accSin, accCos) * RAD_TO_DEG;
         if (dir < 0) dir += 360.0f;
         rec.wind_dir   = roundf(dir);
+        if (rec.wind_dir >= 360.0f)
+          rec.wind_dir = 0.0f;
         rec.rain_mm    = accRain;
         rec.light      = accLux / countMeteo;
         rec.uv         = roundf(accUv / countMeteo);
@@ -925,17 +928,22 @@ void handleSaveAndFlush(unsigned long now) {
 }
 
 void initHardwareWatchdog() {
-  #if ESP_ARDUINO_VERSION_MAJOR >= 3
-    esp_task_wdt_config_t wdtCfg = {
-      .timeout_ms = WDT_TIMEOUT_SEC * 1000,
-      .idle_core_mask = 0,
-      .trigger_panic = true
-    };
-    esp_task_wdt_reconfigure(&wdtCfg);
-  #else
-    esp_task_wdt_init(WDT_TIMEOUT_SEC, true);
-  #endif
+#if ESP_IDF_VERSION_MAJOR >= 5
+  esp_task_wdt_config_t wdtCfg = {
+    .timeout_ms     = WDT_TIMEOUT_SEC * 1000U,
+    .idle_core_mask = 0,
+    .trigger_panic  = true
+  };
+  if (esp_task_wdt_reconfigure(&wdtCfg) == ESP_ERR_INVALID_STATE) {
+    esp_task_wdt_init(&wdtCfg);
+  }
+  if (esp_task_wdt_status(NULL) != ESP_OK) {
+    esp_task_wdt_add(NULL);
+  }
+#else
+  esp_task_wdt_init(WDT_TIMEOUT_SEC, true);
   esp_task_wdt_add(NULL);
+#endif
 }
 
 void setup_main() {
@@ -959,8 +967,10 @@ void setup_main() {
     rtcWdtReboots = 0;
     rtcLastRainRaw = 0;
     rtcFirstRainReading = true;
+  } else if (reason == ESP_RST_SW || reason == ESP_RST_EXT) {
+    rtcConsecutiveNetFailures = 0;
   } else if (reason == ESP_RST_TASK_WDT || reason == ESP_RST_INT_WDT ||
-             reason == ESP_RST_WDT || reason == ESP_RST_PANIC) {
+          reason == ESP_RST_WDT || reason == ESP_RST_PANIC) {
     if (rtcWdtReboots < 250) rtcWdtReboots++;
     incrementNetFailuresSaturated();
     LOG_PRINTF("[BOOT] Ripristino da WDT/PANIC (Reason: %u, Count: %u, NetFail: %u)\n",
@@ -983,7 +993,32 @@ void setup_main() {
 
   ArduinoOTA.setHostname(OTA_HOSTNAME);
   ArduinoOTA.setPassword(OTA_PASSWORD);
-  ArduinoOTA.onStart([]() { otaUpdating = true; esp_task_wdt_reset(); });
+  ArduinoOTA.onStart([]() {
+    otaUpdating = true;
+    esp_task_wdt_reset();
+    commitQueueState();
+    if (ramRingCount > 0) {
+      time_t nowTs;
+      time(&nowTs);
+      uint32_t ep = (uint32_t)nowTs;
+      if (ep >= MIN_VALID_EPOCH) {
+        uint32_t nowSec = millis() / 1000UL;
+        while (ramRingCount > 0) {
+          SensorRecord& r = ramRing[ramRingHead];
+          if (r.timestamp < MIN_VALID_EPOCH) {
+            uint32_t ageSec = (nowSec >= r.timestamp) ? (nowSec - r.timestamp) : 0;
+            r.timestamp = (ep > ageSec + MIN_VALID_EPOCH) ? (ep - ageSec) : ep;
+          }
+          if (!recordLooksValid(r) || saveRecordToSD(r)) {
+            ramRingHead = (ramRingHead + 1) % RAM_RING_CAPACITY;
+            ramRingCount--;
+          } else {
+            break;
+          }
+        }
+      }
+    }
+  });
   ArduinoOTA.onProgress([](unsigned int, unsigned int) { esp_task_wdt_reset(); });
   ArduinoOTA.onEnd([]() { otaUpdating = false; esp_task_wdt_reset(); });
   ArduinoOTA.onError([](ota_error_t) { otaUpdating = false; esp_task_wdt_reset(); });

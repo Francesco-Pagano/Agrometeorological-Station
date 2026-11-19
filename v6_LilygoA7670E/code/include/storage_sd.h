@@ -203,9 +203,14 @@ bool initStorageSD() {
       sdPrefs.putUInt("cursor", queueCursor);
     }
     if (queueCursor >= fSize) {
-      SD.remove(SD_QUEUE_FILE);
-      queueCursor = 0;
-      sdPrefs.putUInt("cursor", 0);
+      if (SD.remove(SD_QUEUE_FILE)) {
+        queueCursor = 0;
+        LOG_PRINTLN("[SD] Coda arretrati azzerata.");
+      } else {
+        queueCursor = fSize;
+        LOG_PRINTLN("[SD] Rimozione coda fallita, riprovo al prossimo commit.");
+      }
+      sdPrefs.putUInt("cursor", queueCursor);
     }
   } else if (queueCursor != 0) {
     queueCursor = 0;
@@ -377,9 +382,13 @@ void commitQueueState() {
       size_t fSize = q.size();
       q.close();
       if (queueCursor >= fSize) {
-        SD.remove(SD_QUEUE_FILE);
-        queueCursor = 0;
-        LOG_PRINTLN("[SD] Coda arretrati azzerata.");
+        if (SD.remove(SD_QUEUE_FILE)) {
+          queueCursor = 0;
+          LOG_PRINTLN("[SD] Coda arretrati azzerata.");
+        } else {
+          queueCursor = fSize;
+          LOG_PRINTLN("[SD] Rimozione coda fallita, riprovo al prossimo commit.");
+        }
       }
     } else {
       sdMounted = false;

@@ -59,7 +59,10 @@ void setSystemEpoch(uint32_t utcEpoch) {
   if (utcEpoch < MIN_VALID_EPOCH || utcEpoch > MAX_VALID_EPOCH) return;
   struct timeval tv = { .tv_sec = (time_t)utcEpoch, .tv_usec = 0 };
   settimeofday(&tv, NULL);
-  lastSavedSlot = utcEpoch / (INTERVAL_SAVE_MS / 1000UL);
+  uint32_t newSlot = utcEpoch / (INTERVAL_SAVE_MS / 1000UL);
+  if (!clockEverSynced || newSlot < lastSavedSlot) {
+    lastSavedSlot = newSlot;
+  }
   clockEverSynced = true;
   lastClockSyncMillis = millis();
   lastClockSyncAttemptMillis = millis();
@@ -73,7 +76,10 @@ void syncTimeViaNTP() {
     time_t now;
     time(&now);
     if ((uint32_t)now >= MIN_VALID_EPOCH) {
-      lastSavedSlot = (uint32_t)now / (INTERVAL_SAVE_MS / 1000UL);
+      uint32_t newSlot = (uint32_t)now / (INTERVAL_SAVE_MS / 1000UL);
+      if (!clockEverSynced || newSlot < lastSavedSlot) {
+        lastSavedSlot = newSlot;
+      }
       clockEverSynced = true;
       lastClockSyncMillis = millis();
       lastClockSyncAttemptMillis = millis();
@@ -191,11 +197,12 @@ bool mqttOpenSession(Client& netClient) {
     memcpy(&connPkt[pos], MQTT_PASS, passLen); pos += passLen;
   }
 
-  netClient.write(connPkt, pos);
+  if (netClient.write(connPkt, pos) != (size_t)pos) return false;
 
   unsigned long t0 = millis();
   while (netClient.available() < 4) {
     esp_task_wdt_reset();
+    if (!netClient.connected() && netClient.available() < 4) return false;
     if (millis() - t0 > 6000) return false;
     delay(5);
   }
@@ -230,11 +237,12 @@ bool mqttPublishPacketQoS1(Client& netClient, const char* topic, const char* pay
   txBuf[p++] = (uint8_t)(pktId & 0xFF);
   memcpy(&txBuf[p], payload, payLen); p += payLen;
 
-  netClient.write(txBuf, p);
+  if (netClient.write(txBuf, p) != (size_t)p) return false;
 
   unsigned long t0 = millis();
   while (netClient.available() < 4) {
     esp_task_wdt_reset();
+    if (!netClient.connected() && netClient.available() < 4) return false;
     if (millis() - t0 > 7000) return false;
     delay(5);
   }
@@ -618,6 +626,13 @@ void pollCC1101(unsigned long now) {
   }
   if (!cc1101Present) return;
 
+  if (!cc1101WaitMisoLow(15)) {
+    cc1101Present = false;
+    lastMeteoMillis = now - 1140000UL; // Riprova tra 60s
+    LOG_PRINTLN("[CC1101] Timeout MISO in pollCC1101: riprovo tra 60s.");
+    return;
+  }
+
   if ((now - lastCcResetMillis) > 300000UL) {
     if (!cc1101ChipResponds()) {
       cc1101Present = false;
@@ -806,14 +821,15 @@ void populateDiagnostics(SensorRecord& rec) {
   rec.free_heap_kb = (uint16_t)(ESP.getFreeHeap() / 1024UL);
 
   uint8_t flags = 0;
-  if (sdMounted)                        flags |= HW_FLAG_SD_OK;
-  if (cc1101Present)                    flags |= HW_FLAG_CC1101_OK;
+  if (sdMounted)                         flags |= HW_FLAG_SD_OK;
+  if (cc1101Present)                     flags |= HW_FLAG_CC1101_OK;
   if (wifiState == WIFI_STATE_CONNECTED) flags |= HW_FLAG_WIFI_OK;
   rec.hw_flags = flags;
 }
 
 void handleSaveAndFlush(unsigned long now) {
   bool triggerSave = false;
+  bool clockValid = false;
   uint32_t alignedEpoch = 0;
   const uint32_t slotSec = INTERVAL_SAVE_MS / 1000UL;
 
@@ -821,9 +837,10 @@ void handleSaveAndFlush(unsigned long now) {
     time_t nowTs;
     time(&nowTs);
     if ((uint32_t)nowTs >= MIN_VALID_EPOCH) {
+      clockValid = true;
       uint32_t currentSlot = (uint32_t)nowTs / slotSec;
       if (lastSavedSlot == 0) lastSavedSlot = currentSlot;
-      if (currentSlot != lastSavedSlot && (now - lastSaveMillis >= MIN_SAMPLE_WINDOW_MS)) {
+      if (currentSlot > lastSavedSlot && (now - lastSaveMillis >= MIN_SAMPLE_WINDOW_MS)) {
         triggerSave = true;
         lastSavedSlot = currentSlot;
         alignedEpoch = currentSlot * slotSec;
@@ -831,7 +848,7 @@ void handleSaveAndFlush(unsigned long now) {
     }
   }
 
-  if (!triggerSave && (now - lastSaveMillis >= INTERVAL_SAVE_MS)) {
+  if (!clockValid && (now - lastSaveMillis >= INTERVAL_SAVE_MS)) {
     triggerSave = true;
   }
 
@@ -880,7 +897,8 @@ void handleSaveAndFlush(unsigned long now) {
         }
 
         rec.timestamp = (alignedEpoch >= MIN_VALID_EPOCH) ? alignedEpoch : epochNow;
-        lastSavedSlot = rec.timestamp / slotSec;
+        uint32_t savedSlot = rec.timestamp / slotSec;
+        if (savedSlot > lastSavedSlot) lastSavedSlot = savedSlot;
 
         if (saveRecordToSD(rec)) {
           if (rtcConsecutiveNetFailures == 0) {

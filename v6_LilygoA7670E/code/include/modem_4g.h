@@ -25,6 +25,28 @@ void sleepModemDTR() {
   digitalWrite(MODEM_DTR_PIN, HIGH);
 }
 
+bool waitModemReadyAT(int maxTries = 25) {
+  for (int i = 0; i < maxTries; i++) {
+    esp_task_wdt_reset();
+    if (modem.testAT(500)) {
+      modem.sendAT("E0");
+      modem.waitResponse(1000);
+      modem.sendAT("+CTZU=0");
+      modem.waitResponse(1000);
+      modem.sendAT("+CSCLK=1");
+      modem.waitResponse(1000);
+      modemPoweredUp = true;
+      sleepModemDTR();
+      LOG_PRINTLN("[4G] Modem pronto.");
+      return true;
+    }
+    delay(500);
+  }
+  modemPoweredUp = false;
+  LOG_PRINTLN("[4G] ERRORE: Modem non risponde.");
+  return false;
+}
+
 bool wakeModemAndVerifyAT() {
   wakeModemDTR();
   if (!modemPoweredUp) return false;
@@ -50,11 +72,21 @@ bool powerOnModemHardware() {
   Serial1.begin(115200, SERIAL_8N1, MODEM_RX_PIN, MODEM_TX_PIN);
   wakeModemDTR();
 
+  if (modem.testAT(400)) {
+    LOG_PRINTLN("[4G] Modem già attivo: eseguo riavvio pulito via AT+CRESET...");
+    modem.sendAT("+CRESET");
+    modem.waitResponse(3000);
+    modemPoweredUp = false;
+    esp_task_wdt_reset();
+    delay(5000);
+    return waitModemReadyAT(25);
+  }
+
   pinMode(MODEM_RESET_PIN, OUTPUT);
   digitalWrite(MODEM_RESET_PIN, HIGH);
-  delay(100);
+  delay(500);
   digitalWrite(MODEM_RESET_PIN, LOW);
-  delay(100);
+  delay(2000);
 
   pinMode(MODEM_PWRKEY, OUTPUT);
   digitalWrite(MODEM_PWRKEY, LOW);
@@ -62,26 +94,10 @@ bool powerOnModemHardware() {
   digitalWrite(MODEM_PWRKEY, HIGH);
   delay(1000);
   digitalWrite(MODEM_PWRKEY, LOW);
+  esp_task_wdt_reset();
+  delay(3000);
 
-  for (int i = 0; i < 20; i++) {
-    esp_task_wdt_reset();
-    if (modem.testAT(500)) {
-      modem.sendAT("E0");
-      modem.waitResponse(1000);
-      modem.sendAT("+CTZU=0");
-      modem.waitResponse(1000);
-      modem.sendAT("+CSCLK=1");
-      modem.waitResponse(1000);
-      modemPoweredUp = true;
-      sleepModemDTR();
-      LOG_PRINTLN("[4G] Modem pronto.");
-      return true;
-    }
-    delay(500);
-  }
-  modemPoweredUp = false;
-  LOG_PRINTLN("[4G] ERRORE: Modem non risponde.");
-  return false;
+  return waitModemReadyAT(25);
 }
 
 bool ensureCellularConnected() {
@@ -134,15 +150,26 @@ void recoverModemConnection(uint8_t consecutiveFailures) {
 
   if (consecutiveFailures >= 6 &&
       (lastModemHardResetMillis == 0 || (millis() - lastModemHardResetMillis >= MODEM_HARD_RESET_COOLDOWN_MS))) {
-    LOG_PRINTLN("[4G] Hard-reset modem (cooldown 3h rispettato)...");
+    LOG_PRINTLN("[4G] Reboot pulito modem via AT+CRESET (cooldown 3h rispettato)...");
     lastModemHardResetMillis = millis();
     modem.gprsDisconnect();
+    modem.sendAT("+CRESET");
+    modem.waitResponse(3000);
     modemPoweredUp = false;
-    powerOnModemHardware();
+    esp_task_wdt_reset();
+    delay(5000);
+    waitModemReadyAT(25);
+    return;
   } else if ((consecutiveFailures % 3) == 0) {
-    LOG_PRINTLN("[4G] Rinegoziazione sessione APN Iliad...");
+    LOG_PRINTLN("[4G] Riavvio stack radio (CFUN=0/1) per rinnovo PDP e flush DNS...");
     modem.gprsDisconnect();
-    delay(300);
+    modem.sendAT("+CFUN=0");
+    modem.waitResponse(5000);
+    esp_task_wdt_reset();
+    delay(1500);
+    modem.sendAT("+CFUN=1");
+    modem.waitResponse(5000);
+    delay(500);
   }
   sleepModemDTR();
 }

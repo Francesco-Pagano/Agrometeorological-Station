@@ -203,11 +203,11 @@ bool mqttOpenSession(Client& netClient) {
   while (netClient.available() < 4) {
     esp_task_wdt_reset();
     if (!netClient.connected() && netClient.available() < 4) return false;
-    if (millis() - t0 > 6000) return false;
+    if (millis() - t0 > 10000UL) return false;
     delay(5);
   }
   uint8_t connAck[4];
-  netClient.read(connAck, 4);
+  if (netClient.read(connAck, 4) != 4) return false;
   if (connAck[0] != 0x20 || connAck[3] != 0x00) {
     LOG_PRINTF("[MQTT] CONNACK rifiutato: code=0x%02X\n", connAck[3]);
     return false;
@@ -243,11 +243,11 @@ bool mqttPublishPacketQoS1(Client& netClient, const char* topic, const char* pay
   while (netClient.available() < 4) {
     esp_task_wdt_reset();
     if (!netClient.connected() && netClient.available() < 4) return false;
-    if (millis() - t0 > 7000) return false;
+    if (millis() - t0 > 15000UL) return false;
     delay(5);
   }
   uint8_t pubAck[4];
-  netClient.read(pubAck, 4);
+  if (netClient.read(pubAck, 4) != 4) return false;
   uint16_t rxPid = (pubAck[2] << 8) | pubAck[3];
 
   return (pubAck[0] == 0x40 && rxPid == pktId);
@@ -256,6 +256,7 @@ bool mqttPublishPacketQoS1(Client& netClient, const char* topic, const char* pay
 void mqttCloseSession(Client& netClient) {
   const uint8_t discPkt[2] = {0xE0, 0x00};
   netClient.write(discPkt, 2);
+  delay(50);
   netClient.stop();
 }
 
